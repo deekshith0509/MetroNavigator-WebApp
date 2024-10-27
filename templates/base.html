@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro Navigation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}  <!-- Load static files -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="{% url 'metro:home' %}" class="text-xl font-bold">Metro Navigation</a>
+                <div class="space-x-4">
+                    <a href="{% url 'metro:home' %}" class="hover:text-blue-200">Home</a>
+                    <a href="{% url 'admin:index' %}" class="hover:text-blue-200">Admin</a>
+                    <a href="{% url 'metro:metro_map' %}" class="hover:text-blue-200">Map</a>
+                    <a href="{% url 'metro:fare_chart' %}" class="hover:text-blue-200">Fare Chart</a> <!-- Fare Chart Button -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% if messages %}
+        <div class="container mx-auto px-4 mt-4">
+            {% for message in messages %}
+            <div class="p-4 mb-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <!-- Hidden Metro Map Visualization -->
+        <div id="metro-map" style="display:none;" class="container mx-auto px-4 mt-4">
+            <img src="{% static 'images/metro_map_visualization.png' %}" alt="Metro Map" class="mx-auto rounded shadow-lg"/>
+            <button onclick="document.getElementById('metro-map').style.display='none'" class="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700">
+                Hide Metro Map
+            </button>
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-8 py-6">
+        <div class="container mx-auto px-4">
+            <p class="text-center">&copy; 2024 Metro Navigation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}
+    <script>
+        // Optional: Script to close the metro map
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('#metro-map') && !event.target.matches('button[onclick*="Show Metro Map"]')) {
+                document.getElementById('metro-map').style.display = 'none';
+            }
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>
