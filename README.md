@@ -56,6 +56,6 @@ License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 Acknowledgements
 ```
-    Special thanks to the contributors of Django and NetworkX for their amazing libraries.
+Special thanks to the contributors of Django and NetworkX for their amazing libraries.
 
 ```
