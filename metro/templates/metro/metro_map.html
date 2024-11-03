@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fare Chart</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif; /* Modern font */
+            background-color: #f4f4f4; /* Light background for contrast */
+            color: #333; /* Dark text for readability */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin: 20px 0;
+            font-size: 2.5em; /* Larger heading */
+            color: #2c3e50; /* Darker color for the title */
+        }
+        .container {
+            width: 90%; /* Responsive container */
+            max-width: 800px; /* Max width */
+            background: white; /* White background for content */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            border-radius: 10px; /* Rounded corners */
+            padding: 20px; /* Padding around content */
+            text-align: center; /* Center text */
+        }
+        .stretch-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px; /* Rounded corners for image */
+            margin-bottom: 20px; /* Space below the image */
+        }
+        a {
+            display: inline-block; /* Make the link a block */
+            padding: 10px 15px; /* Padding around the link */
+            background-color: #3498db; /* Button color */
+            color: white; /* Button text color */
+            text-decoration: none; /* Remove underline */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s; /* Transition for hover effect */
+        }
+        a:hover {
+            background-color: #2980b9; /* Darker shade on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Metro Map</h1>
+        <img src="{% static 'images/map.jpg' %}" alt="Fare Chart" class="stretch-image">
+        <p>Explore our fare options and plan your journey effectively. For any questions, contact our customer service.</p>
+        <a href="{% url 'metro:home' %}">Back to Home</a>
+    </div>
+</body>
+</html>

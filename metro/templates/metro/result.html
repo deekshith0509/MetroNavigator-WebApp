@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-[50vh] bg-gray-100 p-6 flex flex-col items-center">
+
+    <!-- Map Section -->
+    <div class="mb-8 bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-2xl">
+        <div class="w-full h-[250px] md:h-[400px] bg-gray-200">
+            {% if visualization_path %}
+                <img src="{{ visualization_path }}?{{ now|date:'U' }}" 
+                     alt="Metro Map" 
+                     class="w-full h-full object-contain">
+            {% else %}
+                <div class="flex items-center justify-center h-full">
+                    <p class="text-gray-500">No map available.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <style>
+        @media (max-width: 768px) {
+            .responsive-div {
+                background: transparent !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
+            }
+        }
+    </style>
+
+    <div class="bg-white shadow-lg rounded-lg p-4 w-full max-w-2xl responsive-div">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Route Details</h1>
+
+        {% if error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                <span class="block sm:inline">{{ error }}</span>
+            </div>
+        {% else %}
+            <!-- Journey Summary -->
+            <div class="mb-6 border-b border-gray-200 pb-4">
+                <h2 class="text-xl font-semibold text-gray-900 mb-2 text-center">
+                    Journey from <span class="text-blue-600">{{ source }}</span> 
+                    to <span class="text-blue-600">{{ destination }}</span>
+                </h2>
+                <div class="flex justify-center gap-4 text-gray-600">
+                    <p class="flex items-center">
+                        <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{{ result.total_time }} minutes</span>
+                    </p>
+                    <p class="flex items-center">
+                        <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span>{{ result.total_distance|floatformat:2 }} meters</span>
+                    </p>
+                </div>
+                <div class="mt-4 text-gray-600 text-center">
+                    <strong>Expected Departure Time:</strong> {{ expected_departure_time }}
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                {% for segment in result.journey_details %}
+                    <div class="{% if forloop.counter|divisibleby:2 %}bg-gray-50{% else %}bg-white{% endif %} p-4 rounded-lg shadow-md transition-transform transform hover:scale-105"> <!-- Enhanced card style -->
+                        {% if segment.is_interchange and segment.interchange_message %}
+                            <div class="mb-1">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    Interchange
+                                </span>
+                            </div>
+                            {% if segment.interchange_message %}
+                                <div class="mb-1">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ segment.interchange_message }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        <div class="flex items-center justify-between text-lg font-medium text-gray-900">
+                            <span class="{% if segment.is_interchange and segment.interchange_message %}text-red-600{% endif %} text-left">{{ segment.from }}</span>
+                            <div class="flex items-center justify-center flex-grow">
+                                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </div>
+                            <span class="{% if segment.is_interchange and segment.interchange_message %}text-red-600{% endif %} text-right">{{ segment.to }}</span>
+                        </div>
+                        <div class="mt-1 text-sm text-gray-600">
+                            <span class="mr-4">
+                                <strong>Duration:</strong> {{ segment.time }} mins
+                            </span>
+                            <span>
+                                <strong>Distance:</strong> {{ segment.distance }} m
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- New Search Button -->
+            <div class="mt-8 flex justify-center">
+                <a href="{% url 'metro:home' %}" 
+                   class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    Start a New Search
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

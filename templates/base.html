@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Metro Navigation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}  <!-- Load static files -->
+    {% block extra_css %}{% endblock %}
+    <style>
+        /* Hide the menu by default */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="{% url 'metro:home' %}" class="text-3xl font-bold">Metro Navigation</a>
+                <div class="relative">
+                    <!-- Options Button -->
+                    <button id="optionsButton" class="focus:outline-none hover:bg-blue-500 px-3 py-2 rounded transition duration-300">
+                        Options
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div id="optionsMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 hidden">
+                        <a href="{% url 'admin:index' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Admin</a>
+                        <a href="{% url 'metro:metro_map' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Map</a>
+                        <a href="{% url 'metro:fare_chart' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Fare Chart</a>
+                        <a href="#" id="getLocation" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Get Location</a> <!-- New Option -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // JavaScript to handle the dropdown menu and user location
+        const optionsButton = document.getElementById('optionsButton');
+        const optionsMenu = document.getElementById('optionsMenu');
+
+        // Toggle dropdown menu on button click
+        optionsButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent the click event from bubbling up
+            optionsMenu.classList.toggle('hidden');
+        });
+
+        // Close the dropdown menu when clicking outside
+        window.addEventListener('click', () => {
+            if (!optionsMenu.classList.contains('hidden')) {
+                optionsMenu.classList.add('hidden');
+            }
+        });
+
+        // Close the dropdown menu when an option is selected
+        optionsMenu.addEventListener('click', (event) => {
+            if (event.target.tagName === 'A') {
+                optionsMenu.classList.add('hidden'); // Hide menu after selection
+                if (event.target.id === 'getLocation') {
+                    getUserLocation(); // Call the function when the location option is clicked
+                }
+            }
+        });
+
+    </script>
+    <main>
+        {% if messages %}
+        <div class="container mx-auto px-4 mt-4">
+            {% for message in messages %}
+            <div class="p-4 mb-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Hidden Metro Map Visualization -->
+        <div id="metro-map" style="display:none;" class="container mx-auto px-4 mt-4">
+            <img src="{% static 'images/metro_map_visualization.png' %}" alt="Metro Map" class="mx-auto rounded shadow-lg"/>
+            <button onclick="document.getElementById('metro-map').style.display='none'" class="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700">
+                Hide Metro Map
+            </button>
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+<footer class="bg-gray-900 text-gray-300 mt-auto">
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-lg font-semibold mb-4">About Us</h3>
+                <p class="text-sm">Metro Navigation provides real-time navigation and information for city metro systems, ensuring a seamless travel experience.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Connect With Us</h3>
+              <div class="flex space-x-4 items-center justify-start"> 
+			  
+			                      </a>
+                    <a href="https://github.com/deekshith0509" target="_blank" class="hover:text-white transition-colors" title="GitHub">
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="12 12">
+    <path d="M17.791,46.836C18.502,46.53,19,45.823,19,45v-5.4c0-0.197,0.016-0.402,0.041-0.61C19.027,38.994,19.014,38.997,19,39 c0,0-3,0-3.6,0c-1.5,0-2.8-0.6-3.4-1.8c-0.7-1.3-1-3.5-2.8-4.7C8.9,32.3,9.1,32,9.7,32c0.6,0.1,1.9,0.9,2.7,2c0.9,1.1,1.8,2,3.4,2 c2.487,0,3.82-0.125,4.622-0.555C21.356,34.056,22.649,33,24,33v-0.025c-5.668-0.182-9.289-2.066-10.975-4.975 c-3.665,0.042-6.856,0.405-8.677,0.707c-0.058-0.327-0.108-0.656-0.151-0.987c1.797-0.296,4.843-0.647,8.345-0.714 c-0.112-0.276-0.209-0.559-0.291-0.849c-3.511-0.178-6.541-0.039-8.187,0.097c-0.02-0.332-0.047-0.663-0.051-0.999 c1.649-0.135,4.597-0.27,8.018-0.111c-0.079-0.5-0.13-1.011-0.13-1.543c0-1.7,0.6-3.5,1.7-5c-0.5-1.7-1.2-5.3,0.2-6.6 c2.7,0,4.6,1.3,5.5,2.1C21,13.4,22.9,13,25,13s4,0.4,5.6,1.1c0.9-0.8,2.8-2.1,5.5-2.1c1.5,1.4,0.7,5,0.2,6.6c1.1,1.5,1.7,3.2,1.6,5 c0,0.484-0.045,0.951-0.11,1.409c3.499-0.172,6.527-0.034,8.204,0.102c-0.002,0.337-0.033,0.666-0.051,0.999 c-1.671-0.138-4.775-0.28-8.359-0.089c-0.089,0.336-0.197,0.663-0.325,0.98c3.546,0.046,6.665,0.389,8.548,0.689 c-0.043,0.332-0.093,0.661-0.151,0.987c-1.912-0.306-5.171-0.664-8.879-0.682C35.112,30.873,31.557,32.75,26,32.969V33 c2.6,0,5,3.9,5,6.6V45c0,0.823,0.498,1.53,1.209,1.836C41.37,43.804,48,35.164,48,25C48,12.318,37.683,2,25,2S2,12.318,2,25 C2,35.164,8.63,43.804,17.791,46.836z"></path>
+</svg>
+                    </a>
+                    <a href="mailto:deekshith.bh0509@gmail.com" class="hover:text-white transition-colors" title="Email">
+                        <!-- Email SVG Icon -->
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="12 12">
+<path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"></path><path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"></path><polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"></polygon><path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"></path><path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0 C43.076,8,45,9.924,45,12.298z"></path>
+</svg>
+
+                    <a href="https://www.linkedin.com/in/deekshith-bommarthi/" target="_blank" class="hover:text-white transition-colors" title="LinkedIn">
+
+
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="24 24">
+<path fill="#0288D1" d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"></path><path fill="#FFF" d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z"></path>
+</svg>            </a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 pt-8 border-t border-gray-800 text-center text-sm">
+            <p>&copy; {% now "Y" %} Metro Navigation. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+
+
+
+	{% block extra_js %}
+
+<script>
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.pathname === '/') {
+        if (!sessionStorage.getItem('locationRequested')) {
+            getUserLocation();
+            sessionStorage.setItem('locationRequested', 'true');
+        }
+    }
+});
+
+function getUserLocation() {
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by this browser.");
+        return;
+    }
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 10000, // Increased timeout for better chances of success
+        maximumAge: 60000 // Caching the result for 1 minute
+    };
+    navigator.geolocation.getCurrentPosition(showPosition, handleError, options);
+}
+
+function showPosition(position) {
+    let latitude = parseFloat(position.coords.latitude.toFixed(10));
+    let longitude = parseFloat(position.coords.longitude.toFixed(10));
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch('/metro_stations/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({ 
+            latitude: latitude, 
+            longitude: longitude,
+            accuracy: position.coords.accuracy
+        }),
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.nearest_station) {
+            const nearestStation = data.nearest_station;
+            const distance = data.distance;
+            const distanceInMinutes = (distance / 80).toFixed(2);
+            alert(`Your nearest metro station is ${nearestStation}.\nDistance: ${distance.toFixed(2)} meters (${distanceInMinutes} minutes walk).`);
+        } else {
+            alert('No stations found nearby.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error fetching station data. Please try again.');
+    });
+}
+
+function handleError(error) {
+    let message;
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            message = "Location access was denied. Please enable location services in your settings.";
+            break;
+        case error.POSITION_UNAVAILABLE:
+            message = "Location information is unavailable. Please check your device's location settings.";
+            break;
+        case error.TIMEOUT:
+            message = "Location request timed out. Please try again.";
+            break;
+        default:
+            message = "An unknown error occurred while getting location.";
+            break;
+    }
+    console.error('Geolocation error:', error);
+    alert(message);
+}
+
+
+</script>
+
+
+    <script>
+        // Optional: Script to close the metro map
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('#metro-map') && !event.target.matches('button[onclick*="Show Metro Map"]')) {
+                document.getElementById('metro-map').style.display = 'none';
+            }
+        });
+		
+    </script>
+    {% endblock %}
+</body>
+</html>

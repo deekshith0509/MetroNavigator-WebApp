@@ -1,0 +1,165 @@
+python manage.py runserver_plus 0.0.0.0:8000 --cert-file cert.pem --key-file key.pem
+
+
+
+
+import heapq
+
+def dijkstra(graph, start, target=None):
+    pq = []  # Priority queue
+    heapq.heappush(pq, (0, start))
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
+    previous_nodes = {node: None for node in graph}
+    visited = set()  # Set to track visited nodes
+
+    print(f"Initial distances: {distances}")
+    print(f"Starting Dijkstra's algorithm from '{start}'.")
+
+    while pq:
+        current_distance, current_node = heapq.heappop(pq)
+        print(f"\nCurrent node: {current_node} with distance: {current_distance}")
+
+        if current_node in visited:
+            print(f"Node '{current_node}' has already been visited. Skipping.")
+            continue
+
+        visited.add(current_node)
+        print(f"Visited nodes: {visited}")
+
+        # Early exit if the target is reached
+        if current_node == target:
+            print(f"Target '{target}' reached. Exiting.")
+            break
+
+        for neighbor, weight in graph[current_node].items():
+            if neighbor in visited:
+                print(f"Neighbor '{neighbor}' has already been visited. Skipping.")
+                continue
+            distance = current_distance + weight
+
+            print(f"Checking neighbor '{neighbor}' with weight {weight}.")
+            print(f"Calculated distance to '{neighbor}': {distance}. Current known distance: {distances[neighbor]}.")
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                previous_nodes[neighbor] = current_node
+                heapq.heappush(pq, (distance, neighbor))
+                print(f"Updated distance for '{neighbor}': {distance}. Previous node set to '{current_node}'.")
+                print(f"Updated priority queue: {pq}")
+            else:
+                print(f"No update for '{neighbor}', as {distance} >= {distances[neighbor]}.")
+
+    print(f"\nFinal distances: {distances}")
+    return distances, previous_nodes
+
+def construct_path(previous_nodes, start, target):
+    path = []
+    current_node = target
+
+    print(f"\nConstructing path from '{target}' to '{start}'.")
+
+    while current_node is not None:
+        path.append(current_node)
+        current_node = previous_nodes[current_node]
+        print(f"Backtracking path: {path}")
+
+    path.reverse()
+    print(f"Final path after reversing: {path}")
+    return path
+
+# Example graph representing cities
+graph = {
+    'A': {'B': 4, 'C': 2},
+    'B': {'A': 4, 'C': 5, 'D': 10},
+    'C': {'A': 2, 'B': 5, 'E': 3},
+    'D': {'B': 10, 'F': 11},
+    'E': {'C': 3, 'F': 6},
+    'F': {'D': 11, 'E': 6, 'G': 9},
+    'G': {'F': 9, 'H': 1},
+    'H': {'G': 1}
+}
+
+start_node = 'A'
+target_node = 'H'
+
+distances, previous_nodes = dijkstra(graph, start_node, target_node)
+shortest_path = construct_path(previous_nodes, start_node, target_node)
+
+print(f"\nShortest path from {start_node} to {target_node}: {shortest_path}")
+print(f"Distances: {distances}")
+
+
+
+
+
+-- Clear existing data to avoid conflicts
+DELETE FROM metro_station;
+
+-- Insert all Hyderabad metro stations data
+INSERT INTO metro_station (id, name, code, line_color, latitude, longitude) VALUES
+    -- Red Line Stations
+    (1, 'Miyapur', 'MYP', 'red', 17.493234, 78.391490),
+    (2, 'JNTU College', 'JNTU', 'red', 17.493025, 78.392780),
+    (3, 'KPHB Colony', 'KPHB', 'red', 17.484356, 78.405331),
+    (4, 'Kukatpally', 'KKT', 'red', 17.477200, 78.413700),
+    (5, 'Balanagar', 'BLNR', 'red', 17.466540, 78.434150),
+    (6, 'Moosapet', 'MOOS', 'red', 17.460400, 78.441600),
+    (7, 'Bharatnagar', 'BHR', 'red', 17.455940, 78.446630),
+    (8, 'Erragadda', 'ERR', 'red', 17.448800, 78.456100),
+    (9, 'ESI Hospital', 'ESI', 'red', 17.440200, 78.465000),
+    (10, 'SR Nagar', 'SRN', 'red', 17.434200, 78.471600),
+    (11, 'Ameerpet', 'AME', 'red', 17.429100, 78.448900),
+    (12, 'Punjagutta', 'PNJ', 'red', 17.426900, 78.452800),
+    (13, 'Errum Manzil', 'ERRM', 'red', 17.420600, 78.454800),
+    (14, 'Khairatabad', 'KHD', 'red', 17.411500, 78.465600),
+    (15, 'Lakdi-Ka-Pul', 'LKP', 'red', 17.406700, 78.469800),
+    (16, 'Assembly', 'ASM', 'red', 17.402700, 78.474300),
+    (17, 'Nampally', 'NMP', 'red', 17.395900, 78.477400),
+    (18, 'Gandhi Bhavan', 'GB', 'red', 17.388700, 78.482300),
+    (19, 'Osmania Medical College', 'OMC', 'red', 17.384800, 78.486800),
+    (20, 'MG Bus Station', 'MGBS', 'red', 17.377400, 78.495600),
+    (21, 'Malakpet', 'MLKP', 'red', 17.372500, 78.501200),
+    (22, 'New Market', 'NMKT', 'red', 17.366800, 78.508300),
+    (23, 'Musarambagh', 'MSBG', 'red', 17.361400, 78.515800),
+    (24, 'Dilsukhnagar', 'DSNR', 'red', 17.354000, 78.523600),
+    (25, 'Chaitanyapuri', 'CHTP', 'red', 17.348000, 78.531000),
+    (26, 'Victoria Memorial', 'VM', 'red', 17.339600, 78.536800),
+    (27, 'LB Nagar', 'LBN', 'red', 17.331300, 78.544200),
+
+    -- Blue Line Stations
+    (28, 'Raidurg', 'RDG', 'blue', 17.443900, 78.365300),
+    (29, 'Hitec City', 'HTC', 'blue', 17.441000, 78.380600),
+    (30, 'Durgam Cheruvu', 'DC', 'blue', 17.439800, 78.389400),
+    (31, 'Madhapur', 'MDP', 'blue', 17.437600, 78.396900),
+    (32, 'Peddamma Temple', 'PT', 'blue', 17.433500, 78.406200),
+    (33, 'Jubilee Hills Check Post', 'JHCP', 'blue', 17.430300, 78.413900),
+    (34, 'Jubilee Hills Road No. 5', 'JH5', 'blue', 17.425400, 78.423500),
+    (35, 'Yousufguda', 'YFD', 'blue', 17.419300, 78.431300),
+    (36, 'Madhura Nagar', 'MDNG', 'blue', 17.415200, 78.439100),
+    (37, 'Ameerpet', 'AME', 'blue', 17.429100, 78.448900),
+    (38, 'Begumpet', 'BGPT', 'blue', 17.440600, 78.460000),
+    (39, 'Prakash Nagar', 'PRK', 'blue', 17.450300, 78.469700),
+    (40, 'Rasoolpura', 'RSP', 'blue', 17.458700, 78.479500),
+    (41, 'Paradise', 'PAR', 'blue', 17.465800, 78.486400),
+    (42, 'JBS Parade Ground', 'JBS', 'blue', 17.478500, 78.494600),
+    (43, 'Secunderabad East', 'SCE', 'blue', 17.443000, 78.502000),
+    (44, 'Mettuguda', 'MTG', 'blue', 17.429000, 78.508500),
+    (45, 'Tarnaka', 'TRK', 'blue', 17.422400, 78.513000),
+    (46, 'Habsiguda', 'HBS', 'blue', 17.419500, 78.519600),
+    (47, 'NGRI', 'NGRI', 'blue', 17.416500, 78.525500),
+    (48, 'Stadium', 'STD', 'blue', 17.413600, 78.532000),
+    (49, 'Uppal', 'UPL', 'blue', 17.412100, 78.542300),
+    (50, 'Nagole', 'NGL', 'blue', 17.413093, 78.559269),
+
+    -- Green Line Stations
+    (51, 'JBS Parade Ground', 'JBS', 'green', 17.478500, 78.494600),
+    (52, 'Secunderabad West', 'SCW', 'green', 17.439600, 78.494400),
+    (53, 'Gandhi Hospital', 'GH', 'green', 17.444700, 78.498300),
+    (54, 'Musheerabad', 'MUSH', 'green', 17.449700, 78.506300),
+    (55, 'RTC Cross Roads', 'RTC', 'green', 17.454100, 78.514600),
+    (56, 'Chikkadpally', 'CHPL', 'green', 17.453100, 78.522600),
+    (57, 'Narayanguda', 'NRY', 'green', 17.395900, 78.482300),
+    (58, 'Sultan Bazaar', 'SBZ', 'green', 17.386100, 78.486800),
+    (59, 'MG Bus Station', 'MGBS', 'green', 17.377400, 78.495600);
+

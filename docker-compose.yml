@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    volumes:
+      - .:/app
+      - ./certs:/app/certs
+    ports:
+      - "8000:8000"  # Allow connections from all interfaces
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=metro_navigation.settings
+      - DJANGO_HTTPS=1
+    command: >
+      bash -c "
+        if [ ! -f /app/certs/cert.pem ]; then
+          mkdir -p /app/certs &&
+          openssl req -x509 -newkey rsa:4096 -nodes -out /app/certs/cert.pem -keyout /app/certs/key.pem -days 365 -subj '/CN=*'
+        fi &&
+        python manage.py runserver_plus 0.0.0.0:8000 --cert-file /app/certs/cert.pem --key-file /app/certs/key.pem"
+    networks:
+      - metro_network
+
+networks:
+  metro_network:
+    driver: bridge
