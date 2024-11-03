@@ -84,6 +84,7 @@ docker run -d -p 8000:8000 deekshith7878/metro_navigation:v2.0
 ```
 pip install -r requirements.txt
 ```
+   **Note**: The SSL certificates included in the `certs` directory are self-signed and intended for local development purposes only. While these certificates allow you to run the application with HTTPS locally, it is recommended that you generate your own SSL certificates for production use to ensure proper security and trust.
 
  2.**Create SSL certificates** (if not already created): 
 If you don't have *cert.pem* and *key.pem*, you can generate them with OpenSSL:
@@ -91,6 +92,8 @@ If you don't have *cert.pem* and *key.pem*, you can generate them with OpenSSL:
 mkdir certs
 openssl req -x509 -newkey rsa:4096 -nodes -out certs/cert.pem -keyout certs/key.pem -days 365 -subj '/CN=*'
 ```
+
+
 
 3. **Run the application** using runserver_plus:
 ```
@@ -104,13 +107,13 @@ python manage.py runserver_plus 0.0.0.0:8000 --cert-file certs/cert.pem --key-fi
 
 ## Why Docker?
 
-**Consistency :** Docker ensures that your application runs in the same environment across different machines, eliminating the "it works on my machine" problem.
+>**Consistency :** Docker ensures that your application runs in the same environment across different machines, eliminating the "it works on my machine" problem.
 
-**Isolation :** Docker containers provide an isolated environment for your application, ensuring that it doesn't interfere with other applications running on the same machine.
+>**Isolation :** Docker containers provide an isolated environment for your application, ensuring that it doesn't interfere with other applications running on the same machine.
 
-**Portability :** Docker images can be easily shared and deployed across different environments, from local development machines to cloud servers.
+>**Portability :** Docker images can be easily shared and deployed across different environments, from local development machines to cloud servers.
 
-**Efficiency :** Docker images are lightweight and can be started quickly, improving development and deployment efficiency.
+>**Efficiency :** Docker images are lightweight and can be started quickly, improving development and deployment efficiency.
 ## Usage
  - To run the application using Docker, follow the steps under Pulling and Running the Application.
  - To run the application manually, follow the steps under Manual Execution (Without Docker).
