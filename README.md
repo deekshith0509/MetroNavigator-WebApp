@@ -1,6 +1,6 @@
 # Metro Navigation
 
-Metro Navigation is a web application designed to provide users with information about metro routes, schedules, and navigation assistance. This project utilizes Django for the backend and is containerized using Docker to ensure a consistent development and deployment environment.
+MetroNavigator-WebApp is a Django-based application designed for metro route visualization and journey planning. It employs Dijkstra's algorithm to find optimal paths.The project highlights full-stack development with Python and Django, emphasizing algorithmic applications and real-time navigation. Users can locate the nearest metro station and receive comprehensive journey summaries, including interchanges, expected departure times, and travel distances.
 
 ## Table of Contents
 - [Features](#features)
