@@ -100,7 +100,7 @@ openssl req -x509 -newkey rsa:4096 -nodes -out certs/cert.pem -keyout certs/key.
 python manage.py runserver_plus 0.0.0.0:8000 --cert-file certs/cert.pem --key-file certs/key.pem
 ```
 
-4. **Access the application:** Open your browser and go to https://localhost:8000.
+4. **Access the application:** Open your browser and go to https://<server-ip>:8000.
 
 
 
