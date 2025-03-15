@@ -2,15 +2,15 @@
 
 
 <p align="center">
-  <img src="images/main.jpg" alt="Metro Navigator Main Screen" width="300">
-  <img src="images/main2.jpg" alt="Metro Navigator Alternate View" width="300">
-  <img src="images/pop.jpg" alt="Metro Navigator Popup" width="300">
+  <img src="images/main.jpg" alt="Metro Navigator Main Screen" width="200">
+  <img src="images/main2.jpg" alt="Metro Navigator Alternate View" width="200">
+  <img src="images/pop.jpg" alt="Metro Navigator Popup" width="200">
 </p>
 
 <p align="center">
-  <img src="images/ui1.jpg" alt="Metro Navigator UI 1" width="300">
-  <img src="images/ui2.jpg" alt="Metro Navigator UI 2" width="300">
-  <img src="images/ui3.jpg" alt="Metro Navigator UI 3" width="300">
+  <img src="images/ui1.jpg" alt="Metro Navigator UI 1" width="200">
+  <img src="images/ui2.jpg" alt="Metro Navigator UI 2" width="200">
+  <img src="images/ui3.jpg" alt="Metro Navigator UI 3" width="200">
 </p>
 
 
