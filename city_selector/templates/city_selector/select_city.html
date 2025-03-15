@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro Route Planner | City Selection</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+        .metro-card {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+        }
+        .dropdown-selected {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 0.75rem;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .dropdown-selected:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 0;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.75rem;
+            margin-top: 0.5rem;
+            transition: max-height 0.3s ease, box-shadow 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        .dropdown-list.active {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .dropdown-item:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .dropdown-item img {
+            margin-right: 0.75rem;
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500 p-4">
+    <div class="w-full max-w-md metro-card rounded-2xl shadow-2xl p-8 transform transition-all hover:scale-105 duration-300">
+        <div class="text-center mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-white mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <h1 class="text-3xl font-bold text-white">Metro Route Planner</h1>
+            <p class="text-white/80 mt-2">Select Your City to Begin</p>
+        </div>
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <div class="space-y-4">
+                <label class="block text-white font-semibold mb-2">Choose Your Metro City</label>
+                
+                <!-- Custom Dropdown -->
+                <div class="custom-dropdown" id="cityDropdown">
+                    <input type="hidden" name="city" id="selectedCity" required>
+                    <div class="dropdown-selected" id="dropdownSelected">
+                        <span>Select a Metro City</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="dropdown-list" id="dropdownList">
+                        <div class="dropdown-item" data-value="hyderabad">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHBhdGggZmlsbD0iIzAwNkEwMCIgZD0iTTE4IDBIOC4yMjNjLTIuNjQxIDAtNC43ODcgMi4xNDYtNC43ODcgNC43ODd2MjYuNDI2YzAgMi42NDEgMi4xNDYgNC43ODcgNC43ODcgNC43ODdIMTh6Ii8+PHBhdGggZmlsbD0iI0ZGMDAwMCIgZD0iTTE4IDBoOS43NzdjMi42NDEgMCA0Ljc4NyAyLjE0NiA0Ljc4NyA0Ljc4N3YyNi40MjZjMCAyLjY0MS0yLjE0NiA0Ljc4Ny00Ljc4NyA0Ljc4N0gxOHoiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMTggMThoOS43NzdWMThIMTh6Ii8+PC9zdmc+" alt="Hyderabad Flag">
+                            <span>Hyderabad Metro</span>
+                        </div>
+                        <div class="dropdown-item" data-value="kochi">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHBhdGggZmlsbD0iIzAwNkEwMCIgZD0iTTM2IDE4YzAgOS45NDMtOC4wNTcgMTgtMTggMThTMCAyNy45NDMgMCAxOFM4LjA1NyAwIDE4IDBzMTggOC4wNTcgMTggMTh6Ii8+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTAgMThoMzZ2LTMuNkgwVjE4eiIvPjxwYXRoIGZpbGw9IiNGRjAwMDAiIGQ9Ik0wIDkuNmgzNlY2SDB2My42em0wIDE2LjhoMzZ2LTMuNkgwdjMuNnoiLz48L3N2Zz4=" alt="Kerala Flag">
+                            <span>Kochi Metro</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white/10 rounded-lg p-4 text-white">
+                <h3 class="text-lg font-semibold mb-3">🌍 Metro Network Insights</h3>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex justify-between">
+                        <span>Hyderabad Metro Length:</span>
+                        <span>69 km</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Kochi Metro Length:</span>
+                        <span>25.6 km</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Daily Passengers:</span>
+                        <span>450,000+</span>
+                    </li>
+                </ul>
+            </div>
+
+            <button type="submit" id="submitButton" disabled class="w-full p-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center space-x-2 opacity-50 cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                </svg>
+                <span>Explore Route Planner</span>
+            </button>
+        </form>
+
+        <div class="mt-6 text-center text-white/70 text-xs">
+            <p>🌐 Transforming Urban Mobility | Smart Transit Solutions</p>
+        </div>
+    </div>
+
+    <!-- Dropdown Interaction Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdown = document.getElementById('cityDropdown');
+            const dropdownSelected = document.getElementById('dropdownSelected');
+            const dropdownList = document.getElementById('dropdownList');
+            const selectedCityInput = document.getElementById('selectedCity');
+            const submitButton = document.getElementById('submitButton');
+
+            // Toggle dropdown
+            dropdownSelected.addEventListener('click', function() {
+                dropdownList.classList.toggle('active');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!dropdown.contains(event.target)) {
+                    dropdownList.classList.remove('active');
+                }
+            });
+
+            // Select city
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const cityValue = this.getAttribute('data-value');
+                    const cityName = this.querySelector('span').textContent;
+                    
+                    // Update selected display
+                    dropdownSelected.innerHTML = `
+                        <div class="flex items-center">
+                            <img src="${this.querySelector('img').src}" alt="${cityValue} Flag" class="w-6 h-6 mr-2">
+                            <span>${cityName}</span>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    `;
+                    
+                    // Set hidden input value
+                    selectedCityInput.value = cityValue;
+                    
+                    // Close dropdown
+                    dropdownList.classList.remove('active');
+                    
+                    // Enable submit button
+                    submitButton.disabled = false;
+                    submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
