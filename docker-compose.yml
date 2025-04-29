@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  city_selector:
+    build:
+      context: ./city_selector
+    network_mode: "host"
+    volumes:
+      - ./city_selector:/app
+    env_file:
+      - .env
+    command: >
+      sh -c "python manage.py runserver ${HOST_IP:-0.0.0.0}:8000"
+
+  hyderabad:
+    build:
+      context: ./hyderabad
+    network_mode: "host"
+    volumes:
+      - ./hyderabad:/app
+    env_file:
+      - .env
+    command: >
+      sh -c "python manage.py runserver_plus ${HOST_IP:-0.0.0.0}:8001 --cert-file cert.pem --key-file key.pem"
+
+  kochi:
+    build:
+      context: ./kochi
+    network_mode: "host"
+    volumes:
+      - ./kochi:/app
+    env_file:
+      - .env
+    command: >
+      sh -c "python manage.py runserver_plus ${HOST_IP:-0.0.0.0}:8002 --cert-file cert.pem --key-file key.pem"
