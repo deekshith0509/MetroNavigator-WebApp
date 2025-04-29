@@ -12,3 +12,10 @@
 *.der
 *.pfx
 *.p12
+*.key
+*.pem
+*.crt
+*.cer
+*.der
+*.pfx
+*.p12
