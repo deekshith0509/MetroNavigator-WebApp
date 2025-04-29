@@ -1,9 +1,0 @@
-Django
-matplotlib
-networkx
-geopy
-django-extensions
-Werkzeug
-pyOpenSSL
-requests
-pytz
