@@ -140,6 +140,102 @@
 
 	{% block extra_js %}
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.pathname === '/') {
+        if (!sessionStorage.getItem('locationRequested')) {
+            getUserLocation();
+            sessionStorage.setItem('locationRequested', 'true');
+        }
+    }
+});
+
+function getUserLocation() {
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by this browser.");
+        return;
+    }
+
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+    };
+
+    navigator.geolocation.getCurrentPosition(showPosition, handleError, options);
+}
+
+function showPosition(position) {
+    let latitude = parseFloat(position.coords.latitude.toFixed(10));
+    let longitude = parseFloat(position.coords.longitude.toFixed(10));
+
+    sendLocationToServer(latitude, longitude, position.coords.accuracy);
+}
+
+function sendLocationToServer(latitude, longitude, accuracy) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch('/metro_stations/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({
+            latitude: latitude,
+            longitude: longitude,
+            accuracy: accuracy || null
+        }),
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.nearest_station) {
+            const nearestStation = data.nearest_station;
+            const distance = data.distance;
+            const distanceInMinutes = (distance / 80).toFixed(2);
+            alert(`Your nearest metro station is ${nearestStation}.\nDistance: ${distance.toFixed(2)} meters (${distanceInMinutes} minutes walk).`);
+        } else {
+            alert('No stations found nearby.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error fetching station data. Please try again.');
+    });
+}
+
+function handleError(error) {
+    let message;
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            message = "Location access was denied. Please enable location services in your settings.";
+            break;
+        case error.POSITION_UNAVAILABLE:
+            message = "Location information is unavailable. Using default location.";
+            console.warn(message);
+            // Use default fallback coordinates
+            sendLocationToServer(17.5215820041, 78.3674172547, null);
+            return;
+        case error.TIMEOUT:
+            message = "Location request timed out. Please try again.";
+            break;
+        default:
+            message = "An unknown error occurred while getting location.";
+            break;
+    }
+    console.error('Geolocation error:', error);
+    alert(message);
+}
+
+</script>
+<!--
 <script>
 
 
@@ -177,8 +273,8 @@ function showPosition(position) {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrfToken,
         },
-        body: JSON.stringify({ 
-            latitude: latitude, 
+        body: JSON.stringify({
+            latitude: latitude,
             longitude: longitude,
             accuracy: position.coords.accuracy
         }),
@@ -227,7 +323,7 @@ function handleError(error) {
 }
 
 
-</script>
+</script>-->
 
 
     <script>
